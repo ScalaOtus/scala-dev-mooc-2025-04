@@ -156,15 +156,21 @@ object hof{
   sealed trait Option[+T] {
     def isEmpty: Boolean = if(this.isInstanceOf[None.type]) true else false
 
-//    def get: T =  if(this.isInstanceOf[None.type]) throw new Exception("None get")
-//      else{
-//        val r = this.asInstanceOf[Some[T]]
-//        r.v
-//      }
+    def get: T =  if(this.isInstanceOf[None.type]) throw new Exception("None get")
+      else{
+        val r = this.asInstanceOf[Some[T]]
+        r.v
+      }
 
     def map[B](f: T => B): Option[B] = flatMap(v => Option(f(v)))
 
-    def flatMap[B](f: T => Option[B]): Option[B] = ???
+    def flatMap[B](f: T => Option[B]): Option[B] = if(isEmpty) None else f(this.get)
+
+    def printIfAny(): Unit = if(isEmpty) None else println(this.get)
+
+    def zip[B](that: Option[B]): Option[(T,B)] = Option(this.get,that.get)
+
+    def filter(f: T => Boolean): Option[T] = if(f(this.get)) Option(this.get) else None
   }
 
   case class Some[T](v: T) extends Option[T]
@@ -218,7 +224,32 @@ object hof{
     sealed trait List[+T] {
 
      // prepend
-     def ::[TT >: T](elem: TT): List[TT] = ???
+     def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this)
+
+     def mkString(delimiter: String): String = ??? // TODO not implemented
+
+     def reverse: List[T] = {
+       @tailrec
+       def loop(lst: List[T], accum: List[T]): List[T] = lst match {
+         case Nil => accum
+         case ::(head,tail) => loop(tail, new ::(head, accum))
+       }
+       loop(this,Nil)
+     }
+
+     def map[B](f: T => B): B = ??? // TODO not implemented
+     def flatMap[B](f: T => List[B]): List[B] = ??? // TODO not implemented
+
+     def filter(f: T => Boolean): List[T] = { // TODO not correctly works
+       @tailrec
+       def loop(lst: List[T], accum: List[T]): List[T] = lst match {
+         case ::(head,tail) if f(head) => loop(new ::(head, accum), tail)
+         case ::(_,tail) => loop(accum, tail)
+         case Nil => accum
+       }
+       loop(this,Nil)
+     }
+
    }
     case class ::[T](elem: T, tail: List[T]) extends List[T]
     case object Nil extends List[Nothing]
@@ -226,13 +257,16 @@ object hof{
    object List {
      def apply[A](v: A*): List[A] =
        if(v.isEmpty) Nil
-       else new ::(v.head, apply(v.tail :_*))
+       else ::(v.head, apply(v.tail :_*))
    }
 
-   val l1 = List(1, 2, 3)
+//   val l1 = List(1, 2, 3)
+//   val l1a = 1 :: 2 :: 3 :: Nil
+//   val l2: List[Cat] = List(Cat())
 
-   val l2: List[Cat] = List(Cat())
-
+   val lst0: List[Int] = 1 :: 2 :: 3 :: 4 :: Nil
+   val lstReversd: List[Int] = lst0.reverse
+   val lst1: List[Int] = lst0.filter(_ > 2)
 
 
 
