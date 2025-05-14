@@ -11,10 +11,7 @@ import scala.language.postfixOps
  * referential transparency
  */
 
-
-
-
- // recursion
+// recursion
 
 object recursion {
 
@@ -47,17 +44,21 @@ object recursion {
   }
 
 
-
-
-
   /**
    * реализовать вычисление N числа Фибоначчи
    * F0 = 0, F1 = 1, Fn = Fn-1 + Fn - 2
    */
 
-
+  def fibTailRec(n: Int): Int = {
+    @tailrec
+    def loop(i: Int, prevNum: Int, currNum: Int): Int = i match {
+      case 0 => prevNum
+      case 1 => currNum
+      case _ => loop(i - 1, currNum, prevNum + currNum)
+    }
+    loop(n, 0, 1)
+  }
 }
-
 
 
 object hof{
@@ -96,39 +97,13 @@ object hof{
   def partial[A, B, C](a: A)(f: (A, B) => C): B => C =
     f.curried(a)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
 
 /**
  *  Реализуем тип Option
  */
 
-
-
- object opt {
-
-
+object opt {
 
   trait Animal
   case class Cat() extends Animal
@@ -143,7 +118,7 @@ object hof{
   // + Covariance Если А является подтипом В, то Option[A] является подтипом Option[B]
   // - Contravariance Если А является подтипом В, то Option[A] является супер типом Option[B]
 
-    // Function1[-R, +T]
+  // Function1[-R, +T]
   val f1: String => Unit = ???
   val f2: Any => Unit = ???
 
@@ -182,18 +157,25 @@ object hof{
   val opt3: Option[Int] = opt1.flatMap(i => Option(i + 1))
 
 
-
-
   /**
    *
    * Реализовать метод printIfAny, который будет печатать значение, если оно есть
    */
+  def printIfAny[T](value: T): Unit = {
+    Option(value) match {
+      case Some(v) => println(v)
+      case None => ()
+    }
+  }
 
 
   /**
    *
    * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
    */
+  def zip[A, B](opt1: Option[A], opt2: Option[B]): Option[(A, B)] = {
+    opt1.flatMap(a => opt2.map(b => (a, b)))
+  }
 
 
   /**
@@ -201,41 +183,72 @@ object hof{
    * Реализовать метод filter, который будет возвращать не пустой Option
    * в случае если исходный не пуст и предикат от значения = true
    */
+  def filter[T](opt: Option[T])(predicate: T => Boolean): Option[T] = {
+    opt.flatMap(value => if (predicate(value)) Some(value) else None)
+  }
+}
 
- }
 
- object list {
-   /**
+object list {
+  /**
+  *
+  * Реализовать одно связанный иммутабельный список List
+  * Список имеет два случая:
+  * Nil - пустой список
+  * Cons - непустой, содержит первый элемент (голову) и хвост (оставшийся список)
+  */
+
+  def treat(a: Option[Animal]) = ???
+
+  sealed trait List[+T] {
+
+    // prepend
+    def ::[TT >: T](elem: TT): List[TT] = ???
+
+    /**
+      *
+      * Реализовать метод reverse который позволит заменить порядок элементов в списке на противоположный
+      */ 
+    def reverse: List[T] = {
+      @tailrec
+      def loop(remaining: List[T], acc: List[T]): List[T] = remaining match {
+        case ::(head, tail) => loop(tail, head :: acc)
+        case Nil => acc
+      }
+      loop(this, Nil)
+    }
+
+
+    /**
     *
-    * Реализовать одно связанный иммутабельный список List
-    * Список имеет два случая:
-    * Nil - пустой список
-    * Cons - непустой, содержит первый элемент (голову) и хвост (оставшийся список)
+    * Реализовать метод map для списка который будет применять некую ф-цию к элементам данного списка
     */
-
-   def treat(a: Option[Animal]) = ???
-
-    sealed trait List[+T] {
-
-     // prepend
-     def ::[TT >: T](elem: TT): List[TT] = ???
-   }
-    case class ::[T](elem: T, tail: List[T]) extends List[T]
-    case object Nil extends List[Nothing]
-
-   object List {
-     def apply[A](v: A*): List[A] =
-       if(v.isEmpty) Nil
-       else new ::(v.head, apply(v.tail :_*))
-   }
-
-   val l1 = List(1, 2, 3)
-
-   val l2: List[Cat] = List(Cat())
+    def map[B](f: T => B): List[B] = this match {
+      case ::(head, tail) => f(head) :: tail.map(f)
+      case Nil => Nil
+    }
 
 
+    /**
+    *
+    * Реализовать метод filter для списка который будет фильтровать список по некому условию
+    */
+    def filter(p: T => Boolean): List[T] = this match {
+      case ::(head, tail) if p(head) => head :: tail.filter(p)
+      case ::(_, tail) => tail.filter(p)
+      case Nil => Nil
+    }
+
+  }
+  
+  case class ::[T](elem: T, tail: List[T]) extends List[T]
+  case object Nil extends List[Nothing]
 
 
+  object List {
+    def apply[A](v: A*): List[A] =
+      if(v.isEmpty) Nil
+      else new ::(v.head, apply(v.tail :_*))
 
 
     /**
@@ -244,35 +257,31 @@ object hof{
       * 
       * Например, вот этот метод принимает некую последовательность аргументов с типом Int и выводит их на печать
       * def printArgs(args: Int*) = args.foreach(println(_))
-      */
+      */  
+    def fromVarargs[A](elements: A*): List[A] = {
+      elements.foldRight(Nil: List[A])((elem, acc) => ::(elem, acc))
+    }
 
-    /**
-      *
-      * Реализовать метод reverse который позволит заменить порядок элементов в списке на противоположный
-      */
-
-    /**
-      *
-      * Реализовать метод map для списка который будет применять некую ф-цию к элементам данного списка
-      */
-
-
-    /**
-      *
-      * Реализовать метод filter для списка который будет фильтровать список по некому условию
-      */
 
     /**
       *
       * Написать функцию incList которая будет принимать список Int и возвращать список,
       * где каждый элемент будет увеличен на 1
       */
+    def incList(list: List[Int]): List[Int] = list.map(_ + 1)
 
 
     /**
-      *
-      * Написать функцию shoutString которая будет принимать список String и возвращать список,
-      * где к каждому элементу будет добавлен префикс в виде '!'
-      */
+    *
+    * Написать функцию shoutString которая будет принимать список String и возвращать список,
+    * где к каждому элементу будет добавлен префикс в виде '!'
+    */
+    def shoutString(list: List[String]): List[String] = list.map("!" + _)
 
- }
+  }
+
+  val l1 = List(1, 2, 3)
+
+  val l2: List[Cat] = List(Cat())
+
+}
