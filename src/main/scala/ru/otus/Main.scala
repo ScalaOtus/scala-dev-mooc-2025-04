@@ -25,26 +25,5 @@ object App {
     println(lst5)
     println(lst6)
 
-//    sealed trait cList[+A] {
-//      def flatMap[B >: A](f: A => cList[B]): cList[B] = this match {
-//        case Cons(head, tail) => f(head) ++ tail.flatMap(f)
-//        case cNil => cNil
-//      }
-//      // Вспомогательная функция для конкатенации списков
-//      def ++[B >: A](other: cList[B]): cList[B] = this match {
-//        case Cons(head, tail) => Cons(head, tail ++ other)
-//        case cNil => other
-//      }
-//    }
-//    case object cNil extends cList[Nothing]
-//    case class Cons[+A](head: A, tail: cList[A]) extends cList[A]
-//    object cList {
-//      def apply[A](v: A*): cList[A] =
-//        if (v.isEmpty) cNil
-//        else Cons(v.head, apply(v.tail: _*))
-//    }
-//    val clst = cList("1","2","3").flatMap(elem => cList("a" + elem,"b" + elem,"c" + elem))
-//    println(clst)
-
   }
 }
