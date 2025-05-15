@@ -224,9 +224,13 @@ object hof{
     sealed trait List[+T] {
 
      // prepend
-     def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this)
+     def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this) //TODO - why I should create object by `new`?
 
-     def mkString(delimiter: String): String = ??? // TODO not implemented
+     def mkString(delimiter: String): String = this match { //TODO not correct - delimiter at the end
+       case ::(head, tail) => head + delimiter + tail.mkString(delimiter)
+       case Nil => ""
+     }
+     //TODO overload mkString method
 
      def reverse: List[T] = {
        @tailrec
@@ -236,9 +240,22 @@ object hof{
        }
        loop(this,Nil)
      }
-
-     def map[B](f: T => B): B = ??? // TODO not implemented
-     def flatMap[B](f: T => List[B]): List[B] = ??? // TODO not implemented
+     def map[B](f: T => B): List[B] = {
+       @tailrec
+       def loop(acc: List[B], lst: List[T]): List[B] = lst match {
+         case ::(head,tail) => loop(f(head) :: acc, tail)
+         case Nil => acc.reverse //TODO - not correct. It must works without revers
+       }
+       loop(Nil,this)
+     }
+     def flatMap[B](f: T => List[B]): List[B] = this match {
+       case ::(head, tail) => f(head) ++ tail.flatMap(f)
+       case Nil => Nil
+     }
+     def ++[B >: T](otherList: List[B]): List[B] = this match {
+       case ::(head, tail) => new::(head, tail ++ otherList)
+       case Nil => otherList
+     }
 
      def filter(f: T => Boolean): List[T] = { // TODO not correctly works
        @tailrec
@@ -260,13 +277,27 @@ object hof{
        else ::(v.head, apply(v.tail :_*))
    }
 
+   def incList(lst: List[Int]): List[Int] = {
+     lst.map(_ + 1)
+   }
+
+   def shoutString(lst: List[String]): List[String] = {
+     lst.map(_ + "!")
+   }
+
+
 //   val l1 = List(1, 2, 3)
 //   val l1a = 1 :: 2 :: 3 :: Nil
 //   val l2: List[Cat] = List(Cat())
 
    val lst0: List[Int] = 1 :: 2 :: 3 :: 4 :: Nil
    val lstReversd: List[Int] = lst0.reverse
-   val lst1: List[Int] = lst0.filter(_ > 2)
+   val lst1: List[Int] = lst0.map(_ * 2)
+   val lst3 = List("1","2","3").flatMap(elem => List("a" + elem,"b" + elem,"c" + elem))
+   val lst4: List[Int] = lst0.filter(_ > 2) //TODO - dosen't work
+   val lst5: List[Int] = incList(lst0)
+   val lst6: List[String] = shoutString(lst3)
+
 
 
 
