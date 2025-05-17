@@ -16,8 +16,8 @@ object App {
     opt0.printIfAny()
     Opt(2).filter(_ > 1).printIfAny()
 
-     List
-    println(lst0.mkString(", "))
+    // List
+    println(lst0.mkString())
     println(lstReversd)
     println(lst1)
     println(lst3)

@@ -224,13 +224,12 @@ object hof{
     sealed trait List[+T] {
 
      // prepend
-     def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this) //TODO - why I should create object by `new`?
+     def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this)
 
-     def mkString(delimiter: String): String = this match { //TODO not correct - delimiter at the end
-       case ::(head, tail) => head + delimiter + tail.mkString(delimiter)
+     def mkString(): String = this match {
+       case ::(head, tail) => head.toString + " " + tail.mkString()
        case Nil => ""
      }
-     //TODO overload mkString method
 
      def reverse: List[T] = {
        @tailrec
@@ -244,7 +243,7 @@ object hof{
        @tailrec
        def loop(acc: List[B], lst: List[T]): List[B] = lst match {
          case ::(head,tail) => loop(f(head) :: acc, tail)
-         case Nil => acc.reverse //TODO - not correct. It must works without revers
+         case Nil => acc.reverse
        }
        loop(Nil,this)
      }
@@ -257,12 +256,12 @@ object hof{
        case Nil => otherList
      }
 
-     def filter(f: T => Boolean): List[T] = { // TODO not correctly works
+     def filter(f: T => Boolean): List[T] = {
        @tailrec
        def loop(lst: List[T], accum: List[T]): List[T] = lst match {
-         case ::(head,tail) if f(head) => loop(new ::(head, accum), tail)
-         case ::(_,tail) => loop(accum, tail)
-         case Nil => accum
+         case ::(head,tail) if f(head) => loop(tail, new ::(head, accum))
+         case ::(_,tail) => loop(tail, accum)
+         case Nil => accum.reverse
        }
        loop(this,Nil)
      }
@@ -293,8 +292,8 @@ object hof{
    val lst0: List[Int] = 1 :: 2 :: 3 :: 4 :: Nil
    val lstReversd: List[Int] = lst0.reverse
    val lst1: List[Int] = lst0.map(_ * 2)
+   val lst4: List[Int] = lst0.filter(_ > 3)
    val lst3 = List("1","2","3").flatMap(elem => List("a" + elem,"b" + elem,"c" + elem))
-   val lst4: List[Int] = lst0.filter(_ > 2) //TODO - dosen't work
    val lst5: List[Int] = incList(lst0)
    val lst6: List[String] = shoutString(lst3)
 
