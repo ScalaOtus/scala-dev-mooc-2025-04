@@ -1,29 +1,41 @@
 package ru.otus
 
-import ru.otus.module1.{hof, type_system}
-import ru.otus.module1.opt.{Option => Opt}
-import ru.otus.module1.list.{incList, lst0, lst1, lst3, lst4, lst5, lst6, lstReversd}
+import scala.collection.View
 
 
 object App {
   def main(args: Array[String]): Unit = {
 
-    // Optoin
-    Opt("world").printIfAny()
-    Opt("world").map(_.toUpperCase).printIfAny()
-    Opt("world").flatMap(elem => Opt(elem.toUpperCase)).printIfAny()
-    val opt0: Opt[(String,String)] = Opt("hello") zip Opt("world")
-    opt0.printIfAny()
-    Opt(2).filter(_ > 1).printIfAny()
 
-    // List
-    println(lst0.mkString())
-    println(lstReversd)
-    println(lst1)
-    println(lst3)
-    println(lst4)
-    println(lst5)
-    println(lst6)
+    val list = List(1, 2, 3)
+
+    val lazyList = LazyList(1, 2, 3)
+
+    println(list)
+    println(lazyList)
+
+    val r1: View[Int] = list.view.map{ i =>
+      println(s"map $i")
+      i + 1
+    }.filter{ i =>
+      println(s"filter $i")
+      i % 2 == 0
+    }
+
+    val r2 = lazyList.map{ i =>
+      println(s"map lazy $i")
+      i + 1
+    }.filter{ i =>
+      println(s"filter lazy $i")
+      i % 2 == 0
+    }
+
+    val r3 = r1.to(List)
+
+    val r4 = lazyList.zip(list)
+
+    println(r4)
+
 
   }
 }
