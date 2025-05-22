@@ -166,11 +166,11 @@ object hof{
 
     def flatMap[B](f: T => Option[B]): Option[B] = if(isEmpty) None else f(this.get)
 
-    def printIfAny(): Unit = if(isEmpty) None else println(this.get)
+    def printIfAny(): Unit = if(!isEmpty) println(this.get)
 
-    def zip[B](that: Option[B]): Option[(T,B)] = Option(this.get,that.get)
+    def zip[B](that: Option[B]): Option[(T,B)] = if(isEmpty || that.isEmpty) None else Option((this.get,that.get))
 
-    def filter(f: T => Boolean): Option[T] = if(f(this.get)) Option(this.get) else None
+    def filter(f: T => Boolean): Option[T] = if(f(this.get) && !this.isEmpty) this else None
   }
 
   case class Some[T](v: T) extends Option[T]
