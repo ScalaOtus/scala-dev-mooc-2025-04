@@ -1,40 +1,20 @@
 package ru.otus
 
 import scala.collection.View
+import ru.otus.module1.homework.collections.Basket
 
 
 object App {
   def main(args: Array[String]): Unit = {
 
+    val numOfTests = 1000
+    val qualityOfWiteBall: Double = (0 until numOfTests)
+      .map(_ => if (Basket(List(0,1,0,1,0,1)).testReault) 1 else 0)
+      .sum
 
-    val list = List(1, 2, 3)
+    val result: Double = qualityOfWiteBall / numOfTests.toDouble
 
-    val lazyList = LazyList(1, 2, 3)
-
-    println(list)
-    println(lazyList)
-
-    val r1: View[Int] = list.view.map{ i =>
-      println(s"map $i")
-      i + 1
-    }.filter{ i =>
-      println(s"filter $i")
-      i % 2 == 0
-    }
-
-    val r2 = lazyList.map{ i =>
-      println(s"map lazy $i")
-      i + 1
-    }.filter{ i =>
-      println(s"filter lazy $i")
-      i % 2 == 0
-    }
-
-    val r3 = r1.to(List)
-
-    val r4 = lazyList.zip(list)
-
-    println(r4)
+    println(s"result: $result")
 
 
   }
