@@ -6,8 +6,6 @@ import scala.annotation.tailrec
 import scala.language.postfixOps
 import org.scalatest.Assertions._
 
-import javax.swing.JToolBar.Separator
-
 
 /**
  * referential transparency
