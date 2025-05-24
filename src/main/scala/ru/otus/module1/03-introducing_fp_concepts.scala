@@ -120,13 +120,13 @@ object opt {
 	// - Contravariance Если А является подтипом В, то Option[A] является супер типом Option[B]
 
 	// Function1[-R, +T]
-	val f1: String => Unit = ???
-	val f2: Any => Unit = ???
+	//	val f1: String => Unit = ???
+	//	val f2: Any => Unit = ???
 
 	def foo(f: String => Unit) = f("Hello")
 
-	foo(f2)
-	foo(f1)
+	//	foo(f2)
+	//	foo(f1)
 
 
 	sealed trait Option[+T] {
@@ -140,7 +140,10 @@ object opt {
 
 		def map[B](f: T => B): Option[B] = flatMap(v => Option(f(v)))
 
-		def flatMap[B](f: T => Option[B]): Option[B] = ???
+		def flatMap[B](f: T => Option[B]): Option[B] = this match {
+			case Some(v) => Option(f(v))
+			case None => None
+		}
 	}
 
 	case class Some[T](v: T) extends Option[T]
@@ -150,12 +153,20 @@ object opt {
 	object Option {
 		def apply[T](v: T): Option[T] =
 			if (v == null) None else Some(v)
+
+		def apply[T](v: Option[T]): Option[T] = v match {
+			case t@Some(_) => t
+			case None => None
+		}
 	}
 
-	val opt1: Option[Int] = ???
+	val opt1: Option[Int] = Some(1)
 
 	val opt2: Option[Option[Int]] = opt1.map(i => Option(i + 1))
 	val opt3: Option[Int] = opt1.flatMap(i => Option(i + 1))
+
+	println(opt2)
+	println(opt3)
 
 
 	/**
@@ -168,6 +179,9 @@ object opt {
 		case None =>
 	}
 
+	printIfAny(Some(1))
+	printIfAny(None)
+
 	/**
 	 *
 	 * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
@@ -179,6 +193,8 @@ object opt {
 		y <- v2
 	) yield (x, y)
 
+	assert(zip(Some(1), Some(2)) == Some(1, 2))
+	assert(zip(Some(1), None) == None)
 
 	/**
 	 *
@@ -190,6 +206,13 @@ object opt {
 		case Some(true) => v
 		case _ => None
 	}
+
+	assert(filter(Some(1), (i: Int) => i > 0) == Some(1))
+	assert(filter(Some(0), (i: Int) => i > 0) == None)
+	assert(filter(None, (i: Int) => i > 0) == None)
+
+	def main(args: Array[String]): Unit =
+		println("Assertions passed!")
 
 }
 
