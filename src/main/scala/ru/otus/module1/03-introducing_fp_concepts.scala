@@ -207,7 +207,7 @@ object list {
 	sealed trait List[+T] {
 
 		// prepend
-		def ::[TT >: T](elem: TT): List[TT] = new ::(elem, this)
+		def ::[TT >: T](elem: TT): List[TT] = new::(elem, this)
 
 		@tailrec
 		private def _reverse[TT >: T](acc: List[TT] = Nil): List[TT] = this match {
@@ -287,7 +287,7 @@ object list {
 	 *
 	 * Реализовать метод flatMap
 	 * */
-	assert(List(1, 2, 3).flatMap(x => List(10*x, 10*x+1, 10*x+2)) == List(10,11,12,20,21,22,30,31,32))
+	assert(List(1, 2, 3).flatMap(x => List(10 * x, 10 * x + 1, 10 * x + 2)) == List(10, 11, 12, 20, 21, 22, 30, 31, 32))
 
 	/**
 	 *
