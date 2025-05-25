@@ -14,9 +14,9 @@ object CollectionsTask {
    * HINT: Тут удобно использовать collect и zipWithIndex
    *
    * **/
-  def capitalizeIgnoringASCII(text: List[String]): List[String] = {
-    List.empty
-  }
+  def capitalizeIgnoringASCII(text: List[String]): List[String] =
+    text.head :: text.tail.map(elem => if (isASCIIString(elem)) elem.toUpperCase() else elem.toLowerCase())
+
 
   /**
    *
@@ -28,7 +28,22 @@ object CollectionsTask {
    * HINT: Для всех возможных комбинаций чисел стоит использовать Map
    * **/
   def numbersToNumericString(text: String): String = {
-    ""
+
+    def fromDigitToWord(c: Char): String = c match {
+      case '0' => "zero"
+      case '1' => "one"
+      case '2' => "two"
+      case '3' => "three"
+      case '4' => "four"
+      case '5' => "five"
+      case '6' => "six"
+      case '7' => "seven"
+      case '8' => "eight"
+      case '9' => "nine"
+      case other => other.toString
+    }
+
+    text.flatMap(fromDigitToWord)
   }
 
   /**
@@ -46,7 +61,7 @@ object CollectionsTask {
    * Реализуйте метод который примет две коллекции (два источника) и вернёт объединенный список уникальный значений
    **/
   def intersectionAuto(dealerOne: Iterable[Auto], dealerTwo: Iterable[Auto]): Iterable[Auto] = {
-    Iterable.empty
+    dealerOne.toSet.intersect(dealerTwo.toSet)
   }
 
   /**
@@ -55,6 +70,6 @@ object CollectionsTask {
    * и вернёт уникальный список машин обслуживающихся в первом дилерском центре и не обслуживающимся во втором
    **/
   def filterAllLeftDealerAutoWithoutRight(dealerOne: Iterable[Auto], dealerTwo: Iterable[Auto]): Iterable[Auto] = {
-    Iterable.empty
+    dealerOne.toSet.diff(dealerTwo.toSet)
   }
 }

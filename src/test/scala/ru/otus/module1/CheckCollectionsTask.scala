@@ -12,7 +12,7 @@ class CheckCollectionsTask extends AnyFlatSpec {
 
   "check numbersToNumericString" should "ok" in {
     val text = "Hello. I am 9 years old"
-    val transformText = "Hello. I am ten years old"
+    val transformText = "Hello. I am nine years old"
     assert(numbersToNumericString(text) === transformText)
     assert(numbersToNumericString("") === "")
     assert(numbersToNumericString("4") === "four")
