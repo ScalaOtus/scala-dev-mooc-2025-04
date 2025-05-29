@@ -1,18 +1,21 @@
 package ru.otus.module1
 
 import org.scalatest.flatspec.AnyFlatSpec
-import ru.otus.module1.homework.collections.CollectionsTask.{Auto, capitalizeIgnoringASCII, filterAllLeftDealerAutoWithoutRight, intersectionAuto, numbersToNumericString}
+import ru.otus.module1.homework.collections.CollectionsTask.{Auto, capitalizeIgnoringASCII,
+  filterAllLeftDealerAutoWithoutRight, intersectionAuto, numbersToNumericString}
 
 class CheckCollectionsTask extends AnyFlatSpec {
 
   "check capitalizeIgnoringASCII" should "ok" in  {
-    assert(capitalizeIgnoringASCII(List("Lorem", "ipsum", "dolor", "sit", "amet")) == List("Lorem", "IPSUM", "DOLOR", "SIT", "AMET"))
-    assert(capitalizeIgnoringASCII(List("Оказывается", ",", "ЗвУк", "КЛАВИШЬ")) === List("Оказывается", ",", "звук", "клавишь"))
+    assert(capitalizeIgnoringASCII(List("Lorem", "ipsum", "dolor", "sit", "amet")) == List("Lorem", "IPSUM", "DOLOR",
+      "SIT", "AMET"))
+    assert(capitalizeIgnoringASCII(List("Оказывается", ",", "ЗвУк", "КЛАВИШЬ")) === List("Оказывается", ",",
+      "звук", "клавишь"))
   }
 
   "check numbersToNumericString" should "ok" in {
     val text = "Hello. I am 9 years old"
-    val transformText = "Hello. I am ten years old"
+    val transformText = "Hello. I am nine years old"
     assert(numbersToNumericString(text) === transformText)
     assert(numbersToNumericString("") === "")
     assert(numbersToNumericString("4") === "four")

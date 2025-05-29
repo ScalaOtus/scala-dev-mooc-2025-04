@@ -1,40 +1,56 @@
 package ru.otus
 
-import scala.collection.View
+import ru.otus.module1.{concurrency, executors, future}
+import ru.otus.module1.concurrency.{getRatesLocation1, getRatesLocation2, printRunningTime}
+
+import scala.util.{Failure, Success}
 
 
 object App {
   def main(args: Array[String]): Unit = {
 
-
-    val list = List(1, 2, 3)
-
-    val lazyList = LazyList(1, 2, 3)
-
-    println(list)
-    println(lazyList)
-
-    val r1: View[Int] = list.view.map{ i =>
-      println(s"map $i")
-      i + 1
-    }.filter{ i =>
-      println(s"filter $i")
-      i % 2 == 0
+    println(s"Hello from ${Thread.currentThread().getName}")
+    val t0 = new Thread{
+      override def run(): Unit = {
+        Thread.sleep(1000)
+        println(s"Hello from ${Thread.currentThread().getName}")
+      }
     }
+//    val t1 = new concurrency.Thread1
+//    t0.start()
+//    t0.join()
+//    t1.start()
 
-    val r2 = lazyList.map{ i =>
-      println(s"map lazy $i")
-      i + 1
-    }.filter{ i =>
-      println(s"filter lazy $i")
-      i % 2 == 0
-    }
+//    def rates = {
+//      getRatesLocation1.onComplete{
+//        case Success(r1) =>
+//          getRatesLocation2.onComplete{
+//            case Success(r2) => println(r1 + r2)
+//            case Failure(exception) => println(exception.getMessage)
+//        }
+//        case Failure(exception) => println(exception.getMessage)
+//      }
+//    }
+//
+//    getRatesLocation1.onComplete{ case tr1 =>
+//      getRatesLocation2.onComplete { case tr2 =>
+//            val r = for{
+//              i1 <- tr1
+//              i2 <- tr2
+//            } yield (i1 + i2)
+//            println(r)
+//      }
+//    }
+//
+//
+//    printRunningTime(rates)
 
-    val r3 = r1.to(List)
+//    import scala.concurrent.ExecutionContext.Implicits.global
+//    future.printRunningTime(future.rates)
+//      .foreach(_ =>  executors.pool1.shutdown())
+//    println("Hello here")
 
-    val r4 = lazyList.zip(list)
-
-    println(r4)
+    future
 
 
   }
