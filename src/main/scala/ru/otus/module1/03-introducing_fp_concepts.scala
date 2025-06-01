@@ -164,7 +164,13 @@ object hof{
 
     def map[B](f: T => B): Option[B] = flatMap(v => Option(f(v)))
 
-    def flatMap[B](f: T => Option[B]): Option[B] = ???
+    def map[B](f: T => B): Option[B] = flatMap(t => Option(f(t)))
+
+    def flatMap[B](f: T => Option[B]): Option[B] = this match {
+      case Some(v) => f(v)
+      case None => None
+    }
+
   }
 
   case class Some[T](v: T) extends Option[T]
@@ -188,12 +194,16 @@ object hof{
    *
    * Реализовать метод printIfAny, который будет печатать значение, если оно есть
    */
-
+	def printIfAny(): Unit = this match {
+		case Some(x) => println(x)
+		case None => ()
+	}
 
   /**
    *
    * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
    */
+	def zip[B](second: Option[B]): Option[(A, B)] = this.flatMap{x => second.map( y => (x,y))}
 
 
   /**
@@ -201,7 +211,11 @@ object hof{
    * Реализовать метод filter, который будет возвращать не пустой Option
    * в случае если исходный не пуст и предикат от значения = true
    */
+	def filter(predicate: A => Boolean): Option[A] = this match{
 
+	case Some(x) =>  if (predicate(x)) Some(x) else None
+	case None => None
+	}
  }
 
  object list {
