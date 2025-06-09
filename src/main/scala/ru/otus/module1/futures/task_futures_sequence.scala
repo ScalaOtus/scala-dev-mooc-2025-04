@@ -6,6 +6,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object task_futures_sequence {
 
+  // just for pull request
+
   /**
    * В данном задании Вам предлагается реализовать функцию fullSequence,
    * похожую на Future.sequence, но в отличии от нее,
