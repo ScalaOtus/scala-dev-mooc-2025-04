@@ -1,9 +1,16 @@
+lazy val root = (project in file("."))
+  .aggregate(scala213Module, scala3Module)
 
-scalaVersion := "2.13.16"
+lazy val scala213Module = (project in file("scala213Module"))
+  .settings(
+    name := "Scala 2.13 Module",
+    scalaVersion := "2.13.16",
+    libraryDependencies += Dependencies.ScalaTest
+  )
 
-
-name := "scala-dev-mooc-2025-04"
-organization := "ru.otus"
-version := "1.0"
-
-libraryDependencies += Dependencies.ScalaTest
+lazy val scala3Module = (project in file("scala3Module"))
+  .settings(
+    name := "Scala 3 Module",
+    scalaVersion := "3.3.6"
+    // Add other settings and dependencies specific to this module
+  )
