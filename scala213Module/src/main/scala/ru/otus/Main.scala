@@ -5,6 +5,7 @@ import ru.otus.module1.concurrency.{getRatesLocation1, getRatesLocation2, printR
 import ru.otus.module2.{implicits, type_classes}
 
 import scala.util.{Failure, Success}
+import ru.otus.module2.higher_kinded_types.{r1,r2}
 
 
 object Main {
@@ -17,5 +18,8 @@ object Main {
     println("42" / 42)
     println(s"Hello from ${Thread.currentThread().getName}")
     println(type_classes.result)
+
+    r1
+    r2
   }
 } 
